@@ -191,8 +191,8 @@ _Noreturn void task_smartconfig(void *ignore) {
     bool result = false;
     struct station_config sta_conf;
 
-    char test_ssid[] = "IOT_2508";
-    char test_password[] = "wlwsys6688";
+    char test_ssid[] = "ASUS";
+    char test_password[] = "acm2607.";
 
     wifi_set_opmode(STATION_MODE);
 

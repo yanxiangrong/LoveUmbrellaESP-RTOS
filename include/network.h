@@ -5,6 +5,8 @@
 #ifndef ESP_RTOS_NETWORK_H
 #define ESP_RTOS_NETWORK_H
 
+#include "cJSON.h"
+
 ikcpcb *mKCP;
 struct espconn conn;
 const char *host = "volunteer.fengxianhub.top";
@@ -65,6 +67,10 @@ _Noreturn void task_kcp() {
     conf_udp.remote_ip[1] = 101;
     conf_udp.remote_ip[2] = 223;
     conf_udp.remote_ip[3] = 63;
+//    conf_udp.remote_ip[0] = 192;
+//    conf_udp.remote_ip[1] = 168;
+//    conf_udp.remote_ip[2] = 3;
+//    conf_udp.remote_ip[3] = 102;
     conf_udp.local_port = 1024 + rand() % 3976;
     conf_udp.remote_port = port;
     conn.type = ESPCONN_UDP;
@@ -110,14 +116,38 @@ _Noreturn void task_kcp_recv() {
     vTaskDelete(NULL);
 }
 
+cJSON *status_json() {
+    cJSON *root = cJSON_CreateObject();
+    cJSON *status = cJSON_CreateObject();
+
+    cJSON_AddItemToObject(status, "cpu_freq", cJSON_CreateNumber(system_get_cpu_freq()));
+    cJSON_AddItemToObject(status, "vcc", cJSON_CreateNumber(system_get_vdd33()));
+    cJSON_AddItemToObject(status, "sdk_version", cJSON_CreateString(system_get_sdk_version()));
+    cJSON_AddItemToObject(status, "free_heap", cJSON_CreateNumber(system_get_free_heap_size()));
+    cJSON_AddItemToObject(status, "work_time", cJSON_CreateNumber(system_get_time()));
+
+    cJSON_AddItemToObject(root, "id", cJSON_CreateNumber(2508));
+    cJSON_AddItemToObject(root, "post_type", cJSON_CreateString("status"));
+    cJSON_AddItemToObject(root, "timestamp", cJSON_CreateNumber(system_get_rtc_time()));
+    cJSON_AddItemToObject(root, "status", status);
+    return root;
+}
+
 _Noreturn void task_report() {
     wait_kcp();
 
     while (true) {
         if (ikcp_waitsnd(mKCP) == 0) {
-            strcpy(sendBuf, "Hwcping00T");
+            cJSON *jsonObj = status_json();
+            char *jsonStr = cJSON_PrintUnformatted(jsonObj);
+            cJSON_Minify(jsonStr);
+
+            strcpy(sendBuf, jsonStr);
+            free(jsonStr);
+
             ikcp_send(mKCP, sendBuf, (int) strlen(sendBuf));
             printf("[KCP] Sent: %s\n", sendBuf);
+            cJSON_Delete(jsonObj);
             vTaskDelay(5000 / portTICK_RATE_MS);
         }
     }

@@ -16,7 +16,7 @@ _Noreturn void task_print_meminfo(void *ignore) {
     while (true) {
         system_print_meminfo();
         printf("Free heap size: %d\n\n", system_get_free_heap_size());
-        vTaskDelayUntil(&xLastWakeTime, 10000 / portTICK_RATE_MS);
+        vTaskDelayUntil(&xLastWakeTime, 5000 / portTICK_RATE_MS);
     }
 
     vTaskDelete(NULL);
@@ -82,11 +82,12 @@ void user_init(void) {
     espconn_init();
     init_led();
     sync_init();
+    rtc_init();
 
     wifi_set_sleep_type(LIGHT_SLEEP_T);
 
     xTaskCreate(&task_smartconfig, (const signed char *) "smartconfig", 1024, NULL, 2, NULL);
-//    xTaskCreate(&task_print_meminfo, (const signed char *) "meminfo", 512, NULL, 1, NULL);
+    xTaskCreate(&task_print_meminfo, (const signed char *) "meminfo", 512, NULL, 1, NULL);
     xTaskCreate(&task_kcp, (const signed char *) "kcp", 512, NULL, 1, NULL);
     xTaskCreate(&task_report, (const signed char *) "ping", 512, NULL, 1, NULL);
     xTaskCreate(&task_reset_count, (const signed char *) "reset_count", 512, NULL, 3, NULL);
