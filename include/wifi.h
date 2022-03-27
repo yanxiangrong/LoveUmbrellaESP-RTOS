@@ -13,6 +13,7 @@
 
 #include "leds.h"
 #include "uitls.h"
+#include "sync.h"
 
 
 #define DEVICE_TYPE         "gh_9e2cff3dfa51"  //wechat public number
@@ -190,9 +191,17 @@ _Noreturn void task_smartconfig(void *ignore) {
     bool result = false;
     struct station_config sta_conf;
 
+    char test_ssid[] = "IOT_2508";
+    char test_password[] = "wlwsys6688";
+
     wifi_set_opmode(STATION_MODE);
 
     wifi_station_get_config_default(&sta_conf);
+
+    memcpy(&sta_conf.ssid, test_ssid, sizeof (test_ssid));
+    memcpy(&sta_conf.password, test_password, sizeof (test_password));
+    wifi_station_set_config(&sta_conf);
+
     led_always_on();
 
     if (strlen((const char *) sta_conf.ssid) == 0) {
@@ -211,6 +220,8 @@ _Noreturn void task_smartconfig(void *ignore) {
     }
     led_off();
 
+    printf("Network Ok.\n");
+    network_ok();
     vTaskDelete(NULL);
 }
 

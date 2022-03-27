@@ -4,6 +4,8 @@
 #include "leds.h"
 #include "wifi.h"
 #include "restore.h"
+#include "sync.h"
+#include "network.h"
 
 
 _Noreturn void task_print_meminfo(void *ignore) {
@@ -19,77 +21,6 @@ _Noreturn void task_print_meminfo(void *ignore) {
 
     vTaskDelete(NULL);
 }
-
-ikcpcb *mKCP;
-struct espconn conn;
-const char *host = "volunteer.fengxianhub.top";
-const uint16_t port = 67;
-
-void print_espconn_error(int code) {
-    switch (code) {
-        case ESPCONN_MEM:
-            printf("Out of memory!\n");
-            break;
-        case ESPCONN_MAXNUM:
-            printf("Buffer of sending data is full!\n");
-            break;
-        case ESPCONN_ARG:
-            printf("Illegal argument!\n");
-            break;
-        case ESPCONN_IF:
-            printf("Send UDP data fail!\n");
-            break;
-        default:
-            break;
-    }
-}
-
-int udpSendOut(const char *pBuf, int lSize, ikcpcb *pKCP, void *pCTX) {
-    int result;
-
-    printf("Send %d bytes UDP packet\n", lSize);
-    result = espconn_sendto(&conn, (uint8 *) pBuf, lSize);
-    if (result) {
-        print_espconn_error(result);
-    }
-
-    return 0;
-}
-
-_Noreturn void task_kcp() {
-    uint32_t conv;
-    int result;
-    conv = rand();
-
-    ssdp_udp.remote_ip[0] = 47;
-    ssdp_udp.remote_ip[1] = 101;
-    ssdp_udp.remote_ip[2] = 223;
-    ssdp_udp.remote_ip[3] = 63;
-    ssdp_udp.local_port = 1024 + rand() % 3976;
-    ssdp_udp.remote_port = port;
-    pssdpudpconn.type = ESPCONN_UDP;
-    pssdpudpconn.proto.udp = &(ssdp_udp);
-
-    printf("KCP create, conv: %d", conv);
-    mKCP = ikcp_create(conv, NULL);
-    ikcp_nodelay(mKCP, 0, 40, 0, 0);
-    ikcp_wndsize(mKCP, 16, 16);
-    mKCP->rx_minrto = 100;
-    mKCP->output = udpSendOut;
-
-    result = espconn_create(&conn);
-    if (result) {
-        print_espconn_error(result);
-    }
-
-    while (true) {
-        ikcp_update(mKCP, system_get_time());
-        taskYIELD();
-    }
-
-    vTaskDelete(NULL);
-}
-
 
 /******************************************************************************
  * FunctionName : user_rf_cal_sector_set
@@ -150,11 +81,15 @@ void user_init(void) {
 
     espconn_init();
     init_led();
+    sync_init();
 
     wifi_set_sleep_type(LIGHT_SLEEP_T);
 
     xTaskCreate(&task_smartconfig, (const signed char *) "smartconfig", 1024, NULL, 2, NULL);
 //    xTaskCreate(&task_print_meminfo, (const signed char *) "meminfo", 512, NULL, 1, NULL);
-//    xTaskCreate(&task_kcp, (const signed char *) "kcp", 512, NULL, 1, NULL);
+    xTaskCreate(&task_kcp, (const signed char *) "kcp", 512, NULL, 1, NULL);
+    xTaskCreate(&task_report, (const signed char *) "ping", 512, NULL, 1, NULL);
     xTaskCreate(&task_reset_count, (const signed char *) "reset_count", 512, NULL, 3, NULL);
+    xTaskCreate(&task_kcp_recv, (const signed char *) "kcp_recv", 512, NULL, 1, NULL);
+
 }
