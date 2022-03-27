@@ -648,7 +648,7 @@ static void ikcp_ack_push(ikcpcb *kcp, IUINT32 sn, IUINT32 ts)
 
 		if (acklist == NULL) {
 			// assert(acklist != NULL);
-			abort();
+			//abort(); //  abort 也不能用
 		}
 
 		if (kcp->acklist != NULL) {
@@ -782,7 +782,7 @@ int ikcp_input(ikcpcb *kcp, const char *data, long size)
 		if ((long)size < (long)len || (int)len < 0) return -2;
 
 		if (cmd != IKCP_CMD_PUSH && cmd != IKCP_CMD_ACK &&
-			cmd != IKCP_CMD_WASK && cmd != IKCP_CMD_WINS) 
+			cmd != IKCP_CMD_WASK && cmd != IKCP_CMD_WINS)
 			return -3;
 
 		kcp->rmt_wnd = wnd;
@@ -813,15 +813,15 @@ int ikcp_input(ikcpcb *kcp, const char *data, long size)
 				}
 			}
 			if (ikcp_canlog(kcp, IKCP_LOG_IN_ACK)) {
-				ikcp_log(kcp, IKCP_LOG_IN_ACK, 
-					"input ack: sn=%lu rtt=%ld rto=%ld", (unsigned long)sn, 
+				ikcp_log(kcp, IKCP_LOG_IN_ACK,
+					"input ack: sn=%lu rtt=%ld rto=%ld", (unsigned long)sn,
 					(long)_itimediff(kcp->current, ts),
 					(long)kcp->rx_rto);
 			}
 		}
 		else if (cmd == IKCP_CMD_PUSH) {
 			if (ikcp_canlog(kcp, IKCP_LOG_IN_DATA)) {
-				ikcp_log(kcp, IKCP_LOG_IN_DATA, 
+				ikcp_log(kcp, IKCP_LOG_IN_DATA,
 					"input psh: sn=%lu ts=%lu", (unsigned long)sn, (unsigned long)ts);
 			}
 			if (_itimediff(sn, kcp->rcv_nxt + kcp->rcv_wnd) < 0) {
