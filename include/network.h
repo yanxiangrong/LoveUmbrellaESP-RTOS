@@ -6,6 +6,7 @@
 #define ESP_RTOS_NETWORK_H
 
 #include "cJSON.h"
+#include "mtwist.h"
 
 ikcpcb *mKCP;
 struct espconn conn;
@@ -56,16 +57,20 @@ LOCAL esp_udp conf_udp;
 
 _Noreturn void task_kcp() {
     uint32_t conv;
-    int result;\
+    int result;
     bool res;
     ip_addr_t ipAddr;
+    mtwist *mt;
+
+    mt = mtwist_new();
+    mtwist_init(mt, time_now());
 
     wait_time();
     wait_network();
 
-    conv = rand();
+    conv = mtwist_u32rand(mt);
 
-    printf("KCP create, conv: %d\n", conv);
+    printf("KCP create, conv: %u\n", conv);
 
     res = hostnameToIp(server_host, &ipAddr);
     if (not res) {
@@ -80,12 +85,13 @@ _Noreturn void task_kcp() {
            conf_udp.remote_ip[2],
            conf_udp.remote_ip[3]);
 
-    conf_udp.local_port = 1024 + rand() % 3976;
+    conf_udp.local_port = 49152 + (int) (conv % 16383);
     conf_udp.remote_port = server_port;
     conn.type = ESPCONN_UDP;
     conn.proto.udp = &(conf_udp);
 
-    result = espconn_create(&conn);
+    printf("UDP create, Local port: %d, remote port: %d\n", conf_udp.local_port, conf_udp.remote_port);
+    result = (int) espconn_create(&conn);
     if (result) {
         print_espconn_error(result);
     }
@@ -93,6 +99,7 @@ _Noreturn void task_kcp() {
 
     mKCP = ikcp_create(conv, NULL);
     ikcp_nodelay(mKCP, 0, 40, 0, 0);
+    ikcp_setmtu(mKCP, 512);
     ikcp_wndsize(mKCP, 16, 16);
     ikcp_setoutput(mKCP, udpSendOut);
     mKCP->rx_minrto = 100;
@@ -129,15 +136,16 @@ cJSON *status_json() {
     cJSON *root = cJSON_CreateObject();
     cJSON *status = cJSON_CreateObject();
 
+
     cJSON_AddItemToObject(status, "cpu_freq", cJSON_CreateNumber(system_get_cpu_freq()));
-    cJSON_AddItemToObject(status, "vcc", cJSON_CreateNumber(system_get_vdd33()));
     cJSON_AddItemToObject(status, "sdk_version", cJSON_CreateString(system_get_sdk_version()));
     cJSON_AddItemToObject(status, "free_heap", cJSON_CreateNumber(system_get_free_heap_size()));
     cJSON_AddItemToObject(status, "work_time", cJSON_CreateNumber(system_get_time()));
+    cJSON_AddItemToObject(status, "chip_id", cJSON_CreateNumber(system_get_chip_id()));
 
-    cJSON_AddItemToObject(root, "id", cJSON_CreateNumber(2508));
+    cJSON_AddItemToObject(root, "id", cJSON_CreateNumber(system_get_chip_id()));
     cJSON_AddItemToObject(root, "post_type", cJSON_CreateString("status"));
-    cJSON_AddItemToObject(root, "timestamp", cJSON_CreateNumber(system_get_rtc_time()));
+    cJSON_AddItemToObject(root, "timestamp", cJSON_CreateString(int64_to_str(time_now() / 1000)));
     cJSON_AddItemToObject(root, "status", status);
     return root;
 }
