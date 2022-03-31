@@ -5,6 +5,7 @@
 #ifndef ESP_RTOS_LEDS_H
 #define ESP_RTOS_LEDS_H
 
+#include <freertos/semphr.h>
 #include "esp_common.h"
 #include "gpio.h"
 
@@ -17,11 +18,19 @@ enum LedStatus {
 };
 
 xTaskHandle blinkFastTaskHandle = 0;
+xTaskHandle blinkOnceTaskHandle = 0;
+xQueueHandle blinkOnceHandle = 0;
 enum LedStatus ledStatus = LED_OFF;
+
+void task_blink_once(void *);
 
 void init_led() {
     GPIO_AS_OUTPUT(LED_BUILTIN);
     ledStatus = LED_ALWAYS_ON;
+
+    blinkOnceHandle = xSemaphoreCreateCounting(5, 0);
+    xTaskCreate(&task_blink_once, (const signed char *) "blink_once", 512, NULL, 3, blinkOnceTaskHandle);
+
 }
 
 void set_builtin_led_on() {
@@ -63,11 +72,18 @@ _Noreturn void task_blink_fast(void *ignore) {
 }
 
 _Noreturn void task_blink_once(void *ignore) {
-    set_builtin_led_on();
-    vTaskDelay(40 / portTICK_RATE_MS);
-    set_builtin_led_off();
+    while (true) {
+        xSemaphoreTake(blinkOnceHandle, portMAX_DELAY);
+        if (ledStatus != LED_BLINK_ONCE) {
+            continue;
+        }
 
-    ledStatus = LED_OFF;
+        set_builtin_led_on();
+        vTaskDelay(25 / portTICK_RATE_MS);
+        set_builtin_led_off();
+        vTaskDelay(25 / portTICK_RATE_MS);
+    }
+
     vTaskDelete(NULL);
 }
 
@@ -92,11 +108,9 @@ void led_always_on() {
 void led_blink_once() {
     if (ledStatus != LED_OFF) {
         led_prepare();
-        vTaskDelay(40 / portTICK_RATE_MS);
     }
     ledStatus = LED_BLINK_ONCE;
-
-    xTaskCreate(&task_blink_once, (const signed char *) "blink_once", 512, NULL, 3, NULL);
+    xSemaphoreGive(blinkOnceHandle);
 }
 
 
