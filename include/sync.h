@@ -10,6 +10,7 @@
 
 LOCAL xSemaphoreHandle networkMutex;
 LOCAL xSemaphoreHandle kcpMutex;
+LOCAL xSemaphoreHandle timeMutex;
 
 void sync_init() {
     vSemaphoreCreateBinary(networkMutex)
@@ -17,6 +18,9 @@ void sync_init() {
 
     vSemaphoreCreateBinary(kcpMutex)
     xSemaphoreTake(kcpMutex, portMAX_DELAY);
+
+    vSemaphoreCreateBinary(timeMutex)
+    xSemaphoreTake(timeMutex, portMAX_DELAY);
 }
 
 void network_ok() {
@@ -35,6 +39,15 @@ void kcp_ok() {
 void wait_kcp() {
     xSemaphoreTake(kcpMutex, portMAX_DELAY);
     xSemaphoreGive(kcpMutex);
+}
+
+void time_ok() {
+    xSemaphoreGive(timeMutex);
+}
+
+void wait_time() {
+    xSemaphoreTake(timeMutex, portMAX_DELAY);
+    xSemaphoreGive(timeMutex);
 }
 
 #endif //ESP_RTOS_SYNC_H

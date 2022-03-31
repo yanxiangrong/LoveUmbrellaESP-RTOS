@@ -9,8 +9,8 @@
 
 ikcpcb *mKCP;
 struct espconn conn;
-const char *host = "volunteer.fengxianhub.top";
-const uint16_t port = 67;
+const char *server_host = "volunteer.fengxianhub.top";
+const uint16_t server_port = 67;
 char sendBuf[1024];
 char recvBuf[1024];
 
@@ -37,6 +37,7 @@ int udpSendOut(const char *pBuf, int lSize, ikcpcb *pKCP, void *pCTX) {
     int result;
 
     printf("Send %d bytes UDP packet\n", lSize);
+    led_blink_once();
     result = espconn_sendto(&conn, (uint8 *) pBuf, lSize);
     if (result) {
         print_espconn_error(result);
@@ -46,33 +47,41 @@ int udpSendOut(const char *pBuf, int lSize, ikcpcb *pKCP, void *pCTX) {
 }
 
 void udp_recv_callback(void *arg, char *pdata, unsigned short len) {
-    ikcp_input(mKCP, pdata, len);
     printf("Received %d bytes UDP packet\n", len);
+    led_blink_once();
+    ikcp_input(mKCP, pdata, len);
 }
 
 LOCAL esp_udp conf_udp;
 
 _Noreturn void task_kcp() {
     uint32_t conv;
-    int result;
+    int result;\
+    bool res;
+    ip_addr_t ipAddr;
 
+    wait_time();
     wait_network();
-
 
     conv = rand();
 
     printf("KCP create, conv: %d\n", conv);
 
-    conf_udp.remote_ip[0] = 47;
-    conf_udp.remote_ip[1] = 101;
-    conf_udp.remote_ip[2] = 223;
-    conf_udp.remote_ip[3] = 63;
-//    conf_udp.remote_ip[0] = 192;
-//    conf_udp.remote_ip[1] = 168;
-//    conf_udp.remote_ip[2] = 3;
-//    conf_udp.remote_ip[3] = 102;
+    res = hostnameToIp(server_host, &ipAddr);
+    if (not res) {
+        printf("ntp update time fail.\n");
+        vTaskDelete(NULL);
+    }
+
+    memcpy(conf_udp.remote_ip, &ipAddr.addr, 4);
+    printf("Server ip: %d.%d.%d.%d\n",
+           conf_udp.remote_ip[0],
+           conf_udp.remote_ip[1],
+           conf_udp.remote_ip[2],
+           conf_udp.remote_ip[3]);
+
     conf_udp.local_port = 1024 + rand() % 3976;
-    conf_udp.remote_port = port;
+    conf_udp.remote_port = server_port;
     conn.type = ESPCONN_UDP;
     conn.proto.udp = &(conf_udp);
 

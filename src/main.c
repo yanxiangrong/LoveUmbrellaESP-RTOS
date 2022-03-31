@@ -6,7 +6,10 @@
 #include "restore.h"
 #include "sync.h"
 #include "network.h"
-
+#include "i2c.h"
+#include "ds1307.h"
+#include "ntp.h"
+#include "m_time.h"
 
 _Noreturn void task_print_meminfo(void *ignore) {
     portTickType xLastWakeTime;
@@ -77,20 +80,24 @@ uint32 user_rf_cal_sector_set(void) {
  * Returns      : none
 *******************************************************************************/
 void user_init(void) {
+    printf("\n\n");
     printf("SDK version:%s\n", system_get_sdk_version());
 
     espconn_init();
     init_led();
     sync_init();
-    rtc_init();
+    i2c_master_gpio_init();
+    dns_init();
+    ntp_init();
+
 
     wifi_set_sleep_type(LIGHT_SLEEP_T);
-
-    xTaskCreate(&task_smartconfig, (const signed char *) "smartconfig", 1024, NULL, 2, NULL);
     xTaskCreate(&task_print_meminfo, (const signed char *) "meminfo", 512, NULL, 1, NULL);
+    xTaskCreate(&task_smartconfig, (const signed char *) "smartconfig", 1024, NULL, 2, NULL);
     xTaskCreate(&task_kcp, (const signed char *) "kcp", 512, NULL, 1, NULL);
     xTaskCreate(&task_report, (const signed char *) "ping", 512, NULL, 1, NULL);
-    xTaskCreate(&task_reset_count, (const signed char *) "reset_count", 512, NULL, 3, NULL);
     xTaskCreate(&task_kcp_recv, (const signed char *) "kcp_recv", 512, NULL, 1, NULL);
+    xTaskCreate(&task_reset_count, (const signed char *) "reset_count", 512, NULL, 3, NULL);
+    xTaskCreate(&task_update_time, (const signed char *) "ds1307", 512, NULL, 3, NULL);
 
 }
