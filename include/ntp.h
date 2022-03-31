@@ -103,6 +103,7 @@ void ntp_send(ip_addr_t *ntpAddr) {
     udp_connect(ntp_pcb, ntpAddr, NTP_SERVER_PORT);
 
     printf("Send ntp request.\n");
+    led_blink_once();
     udp_sendto(ntp_pcb, buf, ntpAddr, NTP_SERVER_PORT);
 
     udp_disconnect(ntp_pcb);
@@ -116,6 +117,7 @@ void ntp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, ip_addr_t *addr, u
 
     xSemaphoreGive(responseMutex);
 
+    led_blink_once();
     pbuf_copy_partial(p, &packet, sizeof(packet), 0);
 
     endTm = time_now() + NTP_MICROS_DELTA;

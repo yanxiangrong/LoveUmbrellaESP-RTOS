@@ -258,7 +258,9 @@ bool hostnameToIp(const char *hostname, ip_addr_t *ipAddr) {
         err = dns_gethostbyname(hostname, ipAddr, NULL, NULL);
         if (err == ERR_OK) break;
 
-        printf("DNS query fail.\n");
+        if (failCount > 5) {
+            printf("DNS query fail.\n");
+        }
         failCount++;
         delay += delay / 2;
         vTaskDelay(delay / portTICK_RATE_MS);
