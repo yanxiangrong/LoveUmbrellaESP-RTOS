@@ -10,6 +10,9 @@
 #include "ds1307.h"
 #include "ntp.h"
 #include "m_time.h"
+#include "my_devices.h"
+#include "pwm.h"
+#include "frequencies.h"
 
 _Noreturn void task_print_meminfo(void *ignore) {
     portTickType xLastWakeTime;
@@ -73,6 +76,50 @@ uint32 user_rf_cal_sector_set(void) {
     return rf_cal_sec;
 }
 
+_Noreturn void beep_test() {
+    uint32 duty[4] = {512, 512};
+    uint32 io_info[4][3] = {
+            // MUX, FUNC, PIN
+            {PERIPHS_IO_MUX_MTDI_U, FUNC_GPIO12, 12},
+            {PERIPHS_IO_MUX_MTCK_U, FUNC_GPIO13, 13},
+    };
+    pwm_init(1000, duty, 2, io_info);
+    pwm_start();
+    vTaskDelay(2000 / portTICK_RATE_MS);
+
+    while (true) {
+        pwm_set_period(1000000 / C6);
+        pwm_start();
+        vTaskDelay(1000 / portTICK_RATE_MS);
+
+        pwm_set_period(1000000 / D6);
+        pwm_start();
+        vTaskDelay(1000 / portTICK_RATE_MS);
+
+        pwm_set_period(1000000 / E6);
+        pwm_start();
+        vTaskDelay(1000 / portTICK_RATE_MS);
+
+        pwm_set_period(1000000 / F6);
+        pwm_start();
+        vTaskDelay(1000 / portTICK_RATE_MS);
+
+        pwm_set_period(1000000 / G6);
+        pwm_start();
+        vTaskDelay(1000 / portTICK_RATE_MS);
+
+        pwm_set_period(1000000 / A6);
+        pwm_start();
+        vTaskDelay(1000 / portTICK_RATE_MS);
+
+        pwm_set_period(1000000 / B6);
+        pwm_start();
+        vTaskDelay(1000 / portTICK_RATE_MS);
+    }
+
+    vTaskDelete(NULL);
+}
+
 /******************************************************************************
  * FunctionName : user_init
  * Description  : entry of user application, init user function here
@@ -83,6 +130,7 @@ void user_init(void) {
     printf("\n\n");
     printf("SDK version:%s\n", system_get_sdk_version());
 
+
     espconn_init();
     init_led();
     sync_init();
@@ -92,6 +140,8 @@ void user_init(void) {
 
 
     wifi_set_sleep_type(LIGHT_SLEEP_T);
+
+    xTaskCreate(&beep_test, (const signed char *) "beep_test", 512, NULL, 3, NULL);
     xTaskCreate(&task_print_meminfo, (const signed char *) "meminfo", 512, NULL, 1, NULL);
     xTaskCreate(&task_smartconfig, (const signed char *) "smartconfig", 1024, NULL, 2, NULL);
     xTaskCreate(&task_kcp, (const signed char *) "kcp", 512, NULL, 1, NULL);
