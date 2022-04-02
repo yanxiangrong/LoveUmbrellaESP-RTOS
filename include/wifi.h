@@ -187,7 +187,7 @@ void smartconfig_callback(sc_status status, void *pdata) {
 }
 
 
-_Noreturn void task_smartconfig(void *ignore) {
+void task_smartconfig(void *ignore) {
     bool result = false;
     struct station_config sta_conf;
 

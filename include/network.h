@@ -115,6 +115,11 @@ _Noreturn void task_kcp() {
     vTaskDelete(NULL);
 }
 
+void parse(const char *json_str) {
+    cJSON *json = cJSON_Parse(json_str);
+
+}
+
 _Noreturn void task_kcp_recv() {
     int hr;
 
@@ -127,7 +132,7 @@ _Noreturn void task_kcp_recv() {
             continue;
         }
         printf("[KCP] Received:  %s\n", recvBuf);
-        recvBuf[hr] = 0;
+        parse(recvBuf);
     }
     vTaskDelete(NULL);
 }

@@ -12,7 +12,7 @@
 #include "sync.h"
 #include "ntp.h"
 
-_Noreturn void task_update_time(void *ignore) {
+void task_update_time(void *ignore) {
     bool res;
     struct tm time;
 
