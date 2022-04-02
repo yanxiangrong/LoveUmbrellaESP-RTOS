@@ -34,7 +34,11 @@ bool open_lock() {
         return false;
     }
 
-    // todo
+    pwm_set_duty(1024 / 40, 0);
+    pwm_start();
+
+    vTaskDelay(1000 / portTICK_RATE_MS);
+
     dev_status.lock = true;
     return true;
 }
@@ -52,7 +56,10 @@ bool close_lock() {
         return false;
     }
 
-    // todo
+    pwm_set_duty(1024 / 40 * 4, 0);
+    pwm_start();
+
+    vTaskDelay(1500 / portTICK_RATE_MS);
 
     dev_status.lock = false;
     return false;

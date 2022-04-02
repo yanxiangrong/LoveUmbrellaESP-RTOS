@@ -63,7 +63,7 @@ _Noreturn void task_kcp() {
     mtwist *mt;
 
     mt = mtwist_new();
-    mtwist_init(mt, time_now());
+    mtwist_init(mt, time_now() ^ system_get_chip_id());
 
     wait_time();
     wait_network();
