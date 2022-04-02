@@ -16,8 +16,8 @@
 #define LOW 0
 #endif
 
-uint16_t gpio_value = 0;
-uint16_t gpio_status = 0;
+uint16_t gpio_value = 0xFFFF;
+uint16_t gpio_status = 0xFFFF;
 
 
 bool updateGPIO() {

@@ -120,6 +120,50 @@ _Noreturn void beep_test() {
     vTaskDelete(NULL);
 }
 
+_Noreturn void servo_test() {
+    uint32 duty[4] = {0, 0};
+    uint32 io_info[4][3] = {
+            // MUX, FUNC, PIN
+            {PERIPHS_IO_MUX_MTDI_U, FUNC_GPIO12, 12},
+            {PERIPHS_IO_MUX_MTCK_U, FUNC_GPIO13, 13},
+    };
+
+    open_ad_lcd();
+
+    pwm_init(20000, duty, 2, io_info);
+    pwm_start();
+    vTaskDelay(2000 / portTICK_RATE_MS);
+
+    while (true) {
+        open_lock();
+        open_led();
+
+        pwm_set_duty(1024 / 40, 0);
+        pwm_start();
+
+        vTaskDelay(1000 / portTICK_RATE_MS);
+
+        close_led();
+
+        vTaskDelay(1000 / portTICK_RATE_MS);
+
+        open_led();
+
+        pwm_set_duty(1024 / 40 * 4, 0);
+        pwm_start();
+
+        vTaskDelay(1500 / portTICK_RATE_MS);
+
+        close_led();
+        close_lock();
+
+        vTaskDelay(2000 / portTICK_RATE_MS);
+    }
+
+    vTaskDelete(NULL);
+}
+
+
 /******************************************************************************
  * FunctionName : user_init
  * Description  : entry of user application, init user function here
@@ -141,7 +185,8 @@ void user_init(void) {
 
     wifi_set_sleep_type(LIGHT_SLEEP_T);
 
-    xTaskCreate(&beep_test, (const signed char *) "beep_test", 512, NULL, 3, NULL);
+//    xTaskCreate(&beep_test, (const signed char *) "beep_test", 512, NULL, 3, NULL);
+    xTaskCreate(&servo_test, (const signed char *) "servo_test", 512, NULL, 3, NULL);
     xTaskCreate(&task_print_meminfo, (const signed char *) "meminfo", 512, NULL, 1, NULL);
     xTaskCreate(&task_smartconfig, (const signed char *) "smartconfig", 1024, NULL, 2, NULL);
     xTaskCreate(&task_kcp, (const signed char *) "kcp", 512, NULL, 1, NULL);

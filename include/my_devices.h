@@ -10,7 +10,7 @@
 
 
 #define PIN_LOCK 0
-#define PIN_LOCK_PWM 14
+#define PIN_LOCK_PWM 12
 #define PIN_LCD 1
 #define PIN_LED 2
 #define PIN_LCD_POWER_BUTTON 3
@@ -35,6 +35,8 @@ bool open_lock() {
     }
 
     // todo
+    dev_status.lock = true;
+    return true;
 }
 
 bool close_lock() {
@@ -44,13 +46,16 @@ bool close_lock() {
 
     bool res;
 
-    setGPIO(PIN_LOCK, HIGH);
+    setGPIO(PIN_LOCK, LOW);
     res = updateGPIO();
     if (not res) {
         return false;
     }
 
     // todo
+
+    dev_status.lock = false;
+    return false;
 }
 
 bool open_ad_lcd() {
@@ -69,7 +74,11 @@ bool open_ad_lcd() {
     vTaskDelay(1000 / portTICK_RATE_MS);
     setGPIO(PIN_LCD_POWER_BUTTON, HIGH);
 
-    return updateGPIO();
+    res = updateGPIO();
+    if (not res) return false;
+
+    dev_status.ad_lcd = true;
+    return true;
 }
 
 bool close_ad_lcd() {
@@ -77,9 +86,16 @@ bool close_ad_lcd() {
         return true;
     }
 
+    bool res;
+
     setGPIO(PIN_LCD, LOW);
 
-    return updateGPIO();
+    res = updateGPIO();
+
+    if (not res) return false;
+
+    dev_status.ad_lcd = false;
+    return true;
 }
 
 bool open_led() {
@@ -87,9 +103,16 @@ bool open_led() {
         return true;
     }
 
+    bool res;
+
     setGPIO(PIN_LED, HIGH);
 
-    return updateGPIO();
+    res =  updateGPIO();
+
+    if (not res) return false;
+
+    dev_status.led = true;
+    return true;
 }
 
 bool close_led() {
@@ -97,9 +120,16 @@ bool close_led() {
         return true;
     }
 
+    bool res;
+
     setGPIO(PIN_LED, LOW);
 
-    return updateGPIO();
+    res = updateGPIO();
+
+    if (not res) return false;
+
+    dev_status.led = false;
+    return true;
 }
 
 #endif //ESP_RTOS_MY_DEVICES_H
