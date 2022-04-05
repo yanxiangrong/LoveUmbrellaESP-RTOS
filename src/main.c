@@ -13,6 +13,8 @@
 #include "my_devices.h"
 #include "pwm.h"
 #include "frequencies.h"
+#include "user_config.h"
+
 
 _Noreturn void task_print_meminfo(void *ignore) {
     portTickType xLastWakeTime;
@@ -120,49 +122,28 @@ _Noreturn void beep_test() {
     vTaskDelete(NULL);
 }
 
-_Noreturn void servo_test() {
-    uint32 duty[4] = {0, 0};
-    uint32 io_info[4][3] = {
-            // MUX, FUNC, PIN
-            {PERIPHS_IO_MUX_MTDI_U, FUNC_GPIO12, 12},
-            {PERIPHS_IO_MUX_MTCK_U, FUNC_GPIO13, 13},
-    };
 
-    open_ad_lcd();
-
-    pwm_init(20000, duty, 2, io_info);
-    pwm_start();
+_Noreturn void lock_test() {
     vTaskDelay(2000 / portTICK_RATE_MS);
+    open_lock();
+    vTaskDelay(2000 / portTICK_RATE_MS);
+    close_lock();
+    vTaskDelay(2000 / portTICK_RATE_MS);
+    open_lock();
 
     while (true) {
-        open_lock();
-        open_led();
-
-        pwm_set_duty(1024 / 40, 0);
-        pwm_start();
-
-        vTaskDelay(1000 / portTICK_RATE_MS);
-
-        close_led();
-
-        vTaskDelay(1000 / portTICK_RATE_MS);
-
-        open_led();
-
-        pwm_set_duty(1024 / 40 * 4, 0);
-        pwm_start();
-
-        vTaskDelay(1500 / portTICK_RATE_MS);
-
-        close_led();
+        wait_detect();
+        vTaskDelay(500 / portTICK_RATE_MS);
+        printf("detect, lock!\n");
         close_lock();
 
-        vTaskDelay(2000 / portTICK_RATE_MS);
+        vTaskDelay(10000 / portTICK_RATE_MS);
+        open_lock();
+        printf("unlock, wait.\n");
     }
 
     vTaskDelete(NULL);
 }
-
 
 /******************************************************************************
  * FunctionName : user_init
@@ -174,6 +155,7 @@ void user_init(void) {
     printf("\n\n");
     printf("SDK version:%s\n", system_get_sdk_version());
 
+    init_id();
 
     espconn_init();
     init_led();
@@ -181,12 +163,13 @@ void user_init(void) {
     i2c_master_gpio_init();
     dns_init();
     ntp_init();
-
+    pcf8575_init();
+    lock_init();
 
     wifi_set_sleep_type(LIGHT_SLEEP_T);
 
 //    xTaskCreate(&beep_test, (const signed char *) "beep_test", 512, NULL, 3, NULL);
-    xTaskCreate(&servo_test, (const signed char *) "servo_test", 512, NULL, 3, NULL);
+//    xTaskCreate(&lock_test, (const signed char *) "lock_test", 512, NULL, 3, NULL);
     xTaskCreate(&task_print_meminfo, (const signed char *) "meminfo", 512, NULL, 1, NULL);
     xTaskCreate(&task_smartconfig, (const signed char *) "smartconfig", 1024, NULL, 2, NULL);
     xTaskCreate(&task_kcp, (const signed char *) "kcp", 512, NULL, 1, NULL);

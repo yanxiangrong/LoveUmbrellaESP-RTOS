@@ -8,6 +8,9 @@
 #include "cJSON.h"
 #include "mtwist.h"
 
+#include "user_config.h"
+#include "json_parse.h"
+
 ikcpcb *mKCP;
 struct espconn conn;
 const char *server_host = "volunteer.fengxianhub.top";
@@ -85,6 +88,11 @@ _Noreturn void task_kcp() {
            conf_udp.remote_ip[2],
            conf_udp.remote_ip[3]);
 
+    conf_udp.remote_ip[0] = 192;
+    conf_udp.remote_ip[1] = 168;
+    conf_udp.remote_ip[2] = 2;
+    conf_udp.remote_ip[3] = 49;
+
     conf_udp.local_port = 49152 + (int) (conv % 16383);
     conf_udp.remote_port = server_port;
     conn.type = ESPCONN_UDP;
@@ -115,10 +123,6 @@ _Noreturn void task_kcp() {
     vTaskDelete(NULL);
 }
 
-void parse(const char *json_str) {
-    cJSON *json = cJSON_Parse(json_str);
-
-}
 
 _Noreturn void task_kcp_recv() {
     int hr;
@@ -148,11 +152,22 @@ cJSON *status_json() {
     cJSON_AddItemToObject(status, "work_time", cJSON_CreateNumber(system_get_time()));
     cJSON_AddItemToObject(status, "chip_id", cJSON_CreateNumber(system_get_chip_id()));
 
-    cJSON_AddItemToObject(root, "id", cJSON_CreateNumber(system_get_chip_id()));
+    cJSON_AddItemToObject(root, "id", cJSON_CreateNumber(DEVICE_ID_INT));
     cJSON_AddItemToObject(root, "post_type", cJSON_CreateString("status"));
     cJSON_AddItemToObject(root, "timestamp", cJSON_CreateString(int64_to_str(time_now() / 1000)));
     cJSON_AddItemToObject(root, "status", status);
     return root;
+}
+
+void send_json(cJSON *json) {
+    char *jsonStr = cJSON_PrintUnformatted(json);
+    cJSON_Minify(jsonStr);
+
+    strcpy(sendBuf, jsonStr);
+    free(jsonStr);
+
+    ikcp_send(mKCP, sendBuf, (int) strlen(sendBuf));
+    printf("[KCP] Sent: %s\n", sendBuf);
 }
 
 _Noreturn void task_report() {
@@ -161,14 +176,9 @@ _Noreturn void task_report() {
     while (true) {
         if (ikcp_waitsnd(mKCP) == 0) {
             cJSON *jsonObj = status_json();
-            char *jsonStr = cJSON_PrintUnformatted(jsonObj);
-            cJSON_Minify(jsonStr);
 
-            strcpy(sendBuf, jsonStr);
-            free(jsonStr);
+            send_json(jsonObj);
 
-            ikcp_send(mKCP, sendBuf, (int) strlen(sendBuf));
-            printf("[KCP] Sent: %s\n", sendBuf);
             cJSON_Delete(jsonObj);
             vTaskDelay(5000 / portTICK_RATE_MS);
         }
