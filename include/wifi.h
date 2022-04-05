@@ -14,10 +14,10 @@
 #include "leds.h"
 #include "uitls.h"
 #include "sync.h"
+#include "user_config.h"
 
 
 #define DEVICE_TYPE         "gh_9e2cff3dfa51"  //wechat public number
-#define DEVICE_ID           "122475"           //model ID
 
 #define DEFAULT_LAN_PORT    12476
 
@@ -191,8 +191,8 @@ void task_smartconfig(void *ignore) {
     bool result = false;
     struct station_config sta_conf;
 
-    char test_ssid[] = "ASUS";
-    char test_password[] = "acm2607.";
+    char test_ssid[] = "IOT_2508";
+    char test_password[] = "wlwsys6688";
 
     wifi_set_opmode(STATION_MODE);
 
