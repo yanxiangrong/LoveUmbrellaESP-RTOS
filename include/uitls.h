@@ -27,7 +27,7 @@
 
 #define swap(x, y)   do{x=x+y;y=x-y;x=x-y;}while(0)
 #define abs(x) ((x) > 0 ? (x) : (-x))
-
+#define diff_abs(x, y) abs(a - y)
 
 static char result_str[32] = {};
 int64_t system_time_offset = 0;
@@ -272,5 +272,6 @@ bool hostnameToIp(const char *hostname, ip_addr_t *ipAddr) {
         return true;
     }
 }
+
 
 #endif //ESP_RTOS_UITLS_H

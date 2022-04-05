@@ -11,6 +11,7 @@
 LOCAL xSemaphoreHandle networkMutex;
 LOCAL xSemaphoreHandle kcpMutex;
 LOCAL xSemaphoreHandle timeMutex;
+LOCAL xSemaphoreHandle detectMutex;
 
 void sync_init() {
     vSemaphoreCreateBinary(networkMutex)
@@ -21,6 +22,24 @@ void sync_init() {
 
     vSemaphoreCreateBinary(timeMutex)
     xSemaphoreTake(timeMutex, portMAX_DELAY);
+
+    vSemaphoreCreateBinary(detectMutex)
+    xSemaphoreTake(detectMutex, portMAX_DELAY);
+}
+
+void detect_ok() {
+    xSemaphoreGive(networkMutex);
+}
+
+void detect_ok_isr() {
+    static portBASE_TYPE xHigherPriorityTaskWoken;
+    xHigherPriorityTaskWoken = pdFALSE;
+
+    xSemaphoreGiveFromISR(networkMutex, &xHigherPriorityTaskWoken);
+}
+
+void wait_detect() {
+    xSemaphoreTake(networkMutex, portMAX_DELAY);
 }
 
 void network_ok() {
