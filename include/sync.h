@@ -6,67 +6,28 @@
 #define ESP_RTOS_SYNC_H
 
 #include "esp_common.h"
-#include "freertos/semphr.h"
 
-LOCAL xSemaphoreHandle networkMutex;
-LOCAL xSemaphoreHandle kcpMutex;
-LOCAL xSemaphoreHandle timeMutex;
-LOCAL xSemaphoreHandle detectMutex;
+void sync_init();
 
-void sync_init() {
-    vSemaphoreCreateBinary(networkMutex)
-    xSemaphoreTake(networkMutex, portMAX_DELAY);
+void detect_ok();
 
-    vSemaphoreCreateBinary(kcpMutex)
-    xSemaphoreTake(kcpMutex, portMAX_DELAY);
+void detect_ok_isr();
 
-    vSemaphoreCreateBinary(timeMutex)
-    xSemaphoreTake(timeMutex, portMAX_DELAY);
+void wait_detect();
 
-    vSemaphoreCreateBinary(detectMutex)
-    xSemaphoreTake(detectMutex, portMAX_DELAY);
-}
+void try_detect();
 
-void detect_ok() {
-    xSemaphoreGive(networkMutex);
-}
+void network_ok();
 
-void detect_ok_isr() {
-    static portBASE_TYPE xHigherPriorityTaskWoken;
-    xHigherPriorityTaskWoken = pdFALSE;
+void wait_network();
 
-    xSemaphoreGiveFromISR(networkMutex, &xHigherPriorityTaskWoken);
-}
+void kcp_ok();
 
-void wait_detect() {
-    xSemaphoreTake(networkMutex, portMAX_DELAY);
-}
+void wait_kcp();
 
-void network_ok() {
-    xSemaphoreGive(networkMutex);
-}
+void time_ok();
 
-void wait_network() {
-    xSemaphoreTake(networkMutex, portMAX_DELAY);
-    xSemaphoreGive(networkMutex);
-}
+void wait_time();
 
-void kcp_ok() {
-    xSemaphoreGive(kcpMutex);
-}
-
-void wait_kcp() {
-    xSemaphoreTake(kcpMutex, portMAX_DELAY);
-    xSemaphoreGive(kcpMutex);
-}
-
-void time_ok() {
-    xSemaphoreGive(timeMutex);
-}
-
-void wait_time() {
-    xSemaphoreTake(timeMutex, portMAX_DELAY);
-    xSemaphoreGive(timeMutex);
-}
 
 #endif //ESP_RTOS_SYNC_H

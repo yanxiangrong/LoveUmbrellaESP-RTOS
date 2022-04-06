@@ -11,6 +11,7 @@
 
 #include "i2c.h"
 #include "gpio.h"
+#include "i2c_master.h"
 
 #define I2C_MASTER_SDA_GPIO 4
 #define I2C_MASTER_SCL_GPIO 5
