@@ -176,7 +176,7 @@ void user_init(void) {
     xTaskCreate(&task_print_meminfo, (const signed char *) "meminfo", 512, NULL, 1, NULL);
     xTaskCreate(&task_smartconfig, (const signed char *) "smartconfig", 1024, NULL, 2, NULL);
     xTaskCreate(&task_kcp, (const signed char *) "kcp", 512, NULL, 1, NULL);
-    xTaskCreate(&task_report, (const signed char *) "ping", 512, NULL, 1, NULL);
+    xTaskCreate(&task_report, (const signed char *) "task_report", 512, NULL, 1, NULL);
     xTaskCreate(&task_kcp_recv, (const signed char *) "kcp_recv", 512, NULL, 1, NULL);
     xTaskCreate(&task_reset_count, (const signed char *) "reset_count", 512, NULL, 3, NULL);
     xTaskCreate(&task_update_time, (const signed char *) "ds1307", 512, NULL, 3, NULL);

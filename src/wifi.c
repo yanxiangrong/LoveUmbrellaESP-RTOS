@@ -185,16 +185,16 @@ void task_smartconfig(void *ignore) {
     bool result = false;
     struct station_config sta_conf;
 
-    char test_ssid[] = "IOT_2508";
-    char test_password[] = "wlwsys6688";
+//    char test_ssid[] = "IOT_2508";
+//    char test_password[] = "wlwsys6688";
 
     wifi_set_opmode(STATION_MODE);
 
     wifi_station_get_config_default(&sta_conf);
 
-    memcpy(&sta_conf.ssid, test_ssid, sizeof(test_ssid));
-    memcpy(&sta_conf.password, test_password, sizeof(test_password));
-    wifi_station_set_config(&sta_conf);
+//    memcpy(&sta_conf.ssid, test_ssid, sizeof(test_ssid));
+//    memcpy(&sta_conf.password, test_password, sizeof(test_password));
+//    wifi_station_set_config(&sta_conf);
 
     led_always_on();
 

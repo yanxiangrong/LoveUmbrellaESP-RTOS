@@ -153,6 +153,8 @@ cJSON *comm_json() {
     cJSON *root = cJSON_CreateObject();
     cJSON_AddItemToObject(root, "id", cJSON_CreateNumber(get_device_id_int()));
     cJSON_AddItemToObject(root, "timestamp", cJSON_CreateString(int64_to_str(time_now() / 1000)));
+
+    return root;
 }
 
 
@@ -192,9 +194,9 @@ _Noreturn void task_report() {
         if (ikcp_waitsnd(mKCP) == 0) {
             cJSON *jsonObj = status_json();
 
-            send_json(jsonObj);
+//            send_json(jsonObj);
 
-            cJSON_Delete(jsonObj);
+//            cJSON_Delete(jsonObj);
             vTaskDelay(5000 / portTICK_RATE_MS);
         }
     }
