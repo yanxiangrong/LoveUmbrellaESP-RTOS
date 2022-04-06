@@ -194,9 +194,9 @@ _Noreturn void task_report() {
         if (ikcp_waitsnd(mKCP) == 0) {
             cJSON *jsonObj = status_json();
 
-//            send_json(jsonObj);
+            send_json(jsonObj);
 
-//            cJSON_Delete(jsonObj);
+            cJSON_Delete(jsonObj);
             vTaskDelay(5000 / portTICK_RATE_MS);
         }
     }
