@@ -5,12 +5,16 @@
 #include "leds.h"
 #include "freertos/semphr.h"
 
+
+
 xTaskHandle blinkFastTaskHandle = 0;
 xTaskHandle blinkOnceTaskHandle = 0;
 xQueueHandle blinkOnceHandle = 0;
 enum LedStatus ledStatus = LED_OFF;
 
+
 void task_blink_once(void *);
+
 
 void init_led() {
     GPIO_AS_OUTPUT(LED_BUILTIN);
@@ -18,16 +22,18 @@ void init_led() {
 
     blinkOnceHandle = xSemaphoreCreateCounting(5, 0);
     xTaskCreate(&task_blink_once, (const signed char *) "blink_once", 512, NULL, 3, blinkOnceTaskHandle);
-
 }
+
 
 void set_builtin_led_on() {
     GPIO_OUTPUT(GPIO_Pin_2, LOW);
 }
 
+
 void set_builtin_led_off() {
     GPIO_OUTPUT(GPIO_Pin_2, HIGH);
 }
+
 
 void led_prepare() {
     if (ledStatus == LED_OFF)
@@ -42,6 +48,7 @@ void led_prepare() {
     }
     set_builtin_led_off();
 }
+
 
 _Noreturn void task_blink_fast(void *ignore) {
     portTickType xLastWakeTime;
@@ -59,6 +66,7 @@ _Noreturn void task_blink_fast(void *ignore) {
     vTaskDelete(NULL);
 }
 
+
 _Noreturn void task_blink_once(void *ignore) {
     while (true) {
         xSemaphoreTake(blinkOnceHandle, portMAX_DELAY);
@@ -75,6 +83,7 @@ _Noreturn void task_blink_once(void *ignore) {
     vTaskDelete(NULL);
 }
 
+
 void led_blink_fast() {
     int result;
 
@@ -86,11 +95,13 @@ void led_blink_fast() {
     }
 }
 
+
 void led_always_on() {
     led_prepare();
     set_builtin_led_on();
     ledStatus = LED_ALWAYS_ON;
 }
+
 
 
 void led_blink_once() {

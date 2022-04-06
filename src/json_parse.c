@@ -11,6 +11,8 @@
 #include "network.h"
 #include "sync.h"
 
+
+
 void str_fill_zero(char *string, int n) {
     int len;
     len = (int) strlen(string);
@@ -21,6 +23,7 @@ void str_fill_zero(char *string, int n) {
         string[i] = '0';
     }
 }
+
 
 int diff_timestamp(char *timestamp) {
     char *sys_timestamp;
@@ -51,6 +54,7 @@ int diff_timestamp(char *timestamp) {
     return abs(a - b);
 }
 
+
 void return_json(cJSON *json) {
     cJSON *content = cJSON_CreateObject();
 
@@ -60,6 +64,7 @@ void return_json(cJSON *json) {
     cJSON_AddItemToObject(json, "post_type", cJSON_CreateString("return"));
     cJSON_AddItemToObject(json, "content", content);
 }
+
 
 void led_control(cJSON *json) {
     cJSON *power = cJSON_GetObjectItem(json, "power");
@@ -74,6 +79,7 @@ void led_control(cJSON *json) {
     }
 }
 
+
 void lcd_control(cJSON *json) {
     cJSON *power = cJSON_GetObjectItem(json, "power");
 
@@ -86,6 +92,7 @@ void lcd_control(cJSON *json) {
             break;
     }
 }
+
 
 void lock_control(cJSON *json) {
     cJSON *power = cJSON_GetObjectItem(json, "lock_switch");
@@ -101,6 +108,7 @@ void lock_control(cJSON *json) {
             break;
     }
 }
+
 
 void parse_control(cJSON *json) {
     cJSON *target = cJSON_GetObjectItem(json, "target");
@@ -126,6 +134,7 @@ void parse_control(cJSON *json) {
     }
 }
 
+
 void parse_config_wifi(cJSON *item) {
     struct station_config config = {};
 
@@ -144,6 +153,7 @@ void parse_config_wifi(cJSON *item) {
     wifi_station_set_config(&config);
 }
 
+
 void parse_config(cJSON *json) {
     cJSON *config_item_list = cJSON_GetObjectItem(json, "config_items");
     cJSON *item;
@@ -155,6 +165,7 @@ void parse_config(cJSON *json) {
         }
     }
 }
+
 
 void parse(const char *json_str) {
     cJSON *json = cJSON_Parse(json_str);

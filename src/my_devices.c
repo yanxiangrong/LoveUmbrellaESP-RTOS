@@ -3,10 +3,10 @@
 //
 
 #include "my_devices.h"
-#include "freertos/semphr.h"
 #include "sync.h"
 #include "uitls.h"
 #include "pcf8575.h"
+
 
 
 struct {
@@ -27,6 +27,7 @@ void lock_init() {
     pwm_init(20000, duty, 2, io_info);
     pwm_start();
 }
+
 
 bool open_lock() {
     if (dev_status.lock) {
@@ -51,6 +52,7 @@ bool open_lock() {
     return true;
 }
 
+
 bool close_lock() {
     if (not dev_status.lock) {
         return true;
@@ -72,6 +74,7 @@ bool close_lock() {
     dev_status.lock = false;
     return true;
 }
+
 
 bool open_ad_lcd() {
     if (dev_status.ad_lcd) {
@@ -96,6 +99,7 @@ bool open_ad_lcd() {
     return true;
 }
 
+
 bool close_ad_lcd() {
     if (not dev_status.ad_lcd) {
         return true;
@@ -112,6 +116,7 @@ bool close_ad_lcd() {
     dev_status.ad_lcd = false;
     return true;
 }
+
 
 bool open_led() {
     if (dev_status.led) {
@@ -130,6 +135,7 @@ bool open_led() {
     return true;
 }
 
+
 bool close_led() {
     if (not dev_status.led) {
         return true;
@@ -147,6 +153,7 @@ bool close_led() {
     return true;
 }
 
+
 void auto_lock_handle() {
     wait_detect();
     vTaskDelay(500 / portTICK_RATE_MS);
@@ -154,6 +161,7 @@ void auto_lock_handle() {
     close_lock();
     vTaskDelete(NULL);
 }
+
 
 void auto_lock() {
     xTaskCreate(&auto_lock_handle, (const signed char *) "auto_lock", 512, NULL, 3, NULL);

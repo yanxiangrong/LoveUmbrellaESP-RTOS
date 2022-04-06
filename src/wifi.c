@@ -9,9 +9,7 @@
 #include "espressif/airkiss.h"
 
 #include "leds.h"
-#include "uitls.h"
 #include "sync.h"
-#include "user_config.h"
 
 
 LOCAL esp_udp ssdp_udp;
@@ -22,6 +20,7 @@ uint8 lan_buf[200];
 uint16 lan_buf_len;
 uint8 udp_sent_cnt = 0;
 
+
 const airkiss_config_t akconf =
         {
                 (airkiss_memset_fn) &memset,
@@ -29,6 +28,7 @@ const airkiss_config_t akconf =
                 (airkiss_memcmp_fn) &memcmp,
                 0,
         };
+
 
 LOCAL void ICACHE_FLASH_ATTR
 airkiss_wifilan_time_callback(void) {
@@ -60,6 +60,7 @@ airkiss_wifilan_time_callback(void) {
     }
     os_printf("Finish send notify!\n");
 }
+
 
 LOCAL void ICACHE_FLASH_ATTR
 airkiss_wifilan_recv_callbk(void *arg, char *pdata, unsigned short len) {
@@ -106,6 +107,7 @@ airkiss_wifilan_recv_callbk(void *arg, char *pdata, unsigned short len) {
     }
 }
 
+
 void ICACHE_FLASH_ATTR
 airkiss_start_discover(void) {
     ssdp_udp.local_port = DEFAULT_LAN_PORT;
@@ -118,6 +120,7 @@ airkiss_start_discover(void) {
     os_timer_setfn(&ssdp_time_serv, (os_timer_func_t *) airkiss_wifilan_time_callback, NULL);
     os_timer_arm(&ssdp_time_serv, 1000, 1);//1s
 }
+
 
 void smartconfig_callback(sc_status status, void *pdata) {
     switch (status) {

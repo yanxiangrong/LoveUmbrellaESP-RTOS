@@ -13,12 +13,16 @@
 #include "sync.h"
 #include "user_config.h"
 
+
+
 ikcpcb *mKCP;
 struct espconn conn;
 const char *server_host = "volunteer.fengxianhub.top";
 const uint16_t server_port = 67;
 char sendBuf[1024];
 char recvBuf[1024];
+LOCAL esp_udp conf_udp;
+
 
 void print_espconn_error(int code) {
     switch (code) {
@@ -39,6 +43,7 @@ void print_espconn_error(int code) {
     }
 }
 
+
 int udpSendOut(const char *pBuf, int lSize, ikcpcb *pKCP, void *pCTX) {
     int result;
 
@@ -52,13 +57,13 @@ int udpSendOut(const char *pBuf, int lSize, ikcpcb *pKCP, void *pCTX) {
     return 0;
 }
 
+
 void udp_recv_callback(void *arg, char *pdata, unsigned short len) {
     printf("Received %d bytes UDP packet\n", len);
     led_blink_once();
     ikcp_input(mKCP, pdata, len);
 }
 
-LOCAL esp_udp conf_udp;
 
 _Noreturn void task_kcp() {
     uint32_t conv;
@@ -143,11 +148,13 @@ _Noreturn void task_kcp_recv() {
     vTaskDelete(NULL);
 }
 
+
 cJSON *comm_json() {
     cJSON *root = cJSON_CreateObject();
     cJSON_AddItemToObject(root, "id", cJSON_CreateNumber(get_device_id_int()));
     cJSON_AddItemToObject(root, "timestamp", cJSON_CreateString(int64_to_str(time_now() / 1000)));
 }
+
 
 cJSON *status_json() {
     cJSON *status = cJSON_CreateObject();
@@ -165,6 +172,7 @@ cJSON *status_json() {
     return root;
 }
 
+
 void send_json(cJSON *json) {
     char *jsonStr = cJSON_PrintUnformatted(json);
     cJSON_Minify(jsonStr);
@@ -175,6 +183,7 @@ void send_json(cJSON *json) {
     ikcp_send(mKCP, sendBuf, (int) strlen(sendBuf));
     printf("[KCP] Sent: %s\n", sendBuf);
 }
+
 
 _Noreturn void task_report() {
     wait_kcp();

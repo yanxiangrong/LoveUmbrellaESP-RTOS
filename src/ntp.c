@@ -11,6 +11,8 @@
 #include "ds1307.h"
 #include "lwip/udp.h"
 
+
+
 #define NTP_SERVER "ntp.aliyun.com"
 
 
@@ -50,7 +52,9 @@ typedef struct {
 
 void ntp_send(ip_addr_t *);
 
+
 void ntp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, ip_addr_t *addr, u16_t port);
+
 
 void ntp_init() {
     vSemaphoreCreateBinary(responseMutex)
@@ -64,6 +68,7 @@ void ntp_init() {
 
     }
 }
+
 
 void ntp_run() {
     ip_addr_t ipAddr;
@@ -90,6 +95,7 @@ void ntp_run() {
     }
 }
 
+
 void ntp_send(ip_addr_t *ntpAddr) {
     ntp_packet packet = {};
     struct pbuf *buf;
@@ -112,6 +118,7 @@ void ntp_send(ip_addr_t *ntpAddr) {
     udp_disconnect(ntp_pcb);
     pbuf_free(buf);
 }
+
 
 void ntp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, ip_addr_t *addr, u16_t port) {
     ntp_packet packet = {};

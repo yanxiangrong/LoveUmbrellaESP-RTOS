@@ -10,7 +10,6 @@
 
 
 #define DEVICE_TYPE         "gh_9e2cff3dfa51"  //wechat public number
-
 #define DEFAULT_LAN_PORT    12476
 
 

@@ -1219,7 +1219,6 @@ IUINT32 ikcp_check(const ikcpcb *kcp, IUINT32 current)
 }
 
 
-
 int ikcp_setmtu(ikcpcb *kcp, int mtu)
 {
 	char *buffer;
@@ -1235,6 +1234,7 @@ int ikcp_setmtu(ikcpcb *kcp, int mtu)
 	return 0;
 }
 
+
 int ikcp_interval(ikcpcb *kcp, int interval)
 {
 	if (interval > 5000) interval = 5000;
@@ -1242,6 +1242,7 @@ int ikcp_interval(ikcpcb *kcp, int interval)
 	kcp->interval = interval;
 	return 0;
 }
+
 
 int ikcp_nodelay(ikcpcb *kcp, int nodelay, int interval, int resend, int nc)
 {
@@ -1282,6 +1283,7 @@ int ikcp_wndsize(ikcpcb *kcp, int sndwnd, int rcvwnd)
 	return 0;
 }
 
+
 int ikcp_waitsnd(const ikcpcb *kcp)
 {
 	return kcp->nsnd_buf + kcp->nsnd_que;
@@ -1295,5 +1297,3 @@ IUINT32 ikcp_getconv(const void *ptr)
 	ikcp_decode32u((const char*)ptr, &conv);
 	return conv;
 }
-
-

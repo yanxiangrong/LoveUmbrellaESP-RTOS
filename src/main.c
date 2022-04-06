@@ -1,5 +1,5 @@
 #include "espressif/c_types.h"
-#include "lwip/ip4_addr.h"
+#include "lwip/ip4_addr.h"  //虽然没有直接使用这个头文件，但是删掉会编译失败
 #include "espconn.h"
 #include "esp_common.h"
 #include "frequencies.h"
@@ -15,6 +15,7 @@
 #include "restore.h"
 #include "m_time.h"
 #include "lwip/dns.h"
+
 
 
 _Noreturn void task_print_meminfo(void *ignore) {
@@ -78,6 +79,7 @@ uint32 user_rf_cal_sector_set(void) {
 
     return rf_cal_sec;
 }
+
 
 _Noreturn void beep_test() {
     uint32 duty[4] = {512, 512};

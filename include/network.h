@@ -13,4 +13,6 @@ void send_json(cJSON *json);
 
 _Noreturn void task_report();
 
+_Noreturn void task_kcp_recv();
+
 #endif //ESP_RTOS_NETWORK_H

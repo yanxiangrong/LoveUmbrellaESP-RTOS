@@ -7,6 +7,8 @@
 #include "lwip/ip4_addr.h"
 #include "lwip/dns.h"
 
+
+
 #define swap(x, y)   do{x=x+y;y=x-y;x=x-y;}while(0)
 #define abs(x) ((x) > 0 ? (x) : (-x))
 #define diff_abs(x, y) abs(a - y)
@@ -16,6 +18,7 @@ static char result_str[32] = {};
 int64_t system_time_offset = 0;
 int64_t system_rtc_time_offset = 0;
 
+
 char *bool_to_str(bool val) {
     if (val) {
         strcpy(result_str, TRUE_STRING);
@@ -24,6 +27,7 @@ char *bool_to_str(bool val) {
     }
     return result_str;
 }
+
 
 char *int64_to_str(int64_t val) {
     int start = 0, end = -1;
@@ -92,18 +96,22 @@ char *int64_to_str_comma(int64_t val) {
     return result_str;
 }
 
+
 int64_t time_now() {
     return system_time_offset + system_get_time();
 }
+
 
 int64_t time_rtc_now() {
     return system_rtc_time_offset + system_get_rtc_time();
 }
 
+
 void update_time(int64_t newTime) {
     system_time_offset = newTime - system_get_time();
     system_rtc_time_offset = newTime - system_get_rtc_time();
 }
+
 
 bool isLeapYear(int year) {
     if (year % 4 == 0) {
@@ -118,6 +126,7 @@ bool isLeapYear(int year) {
         return false;
     }
 }
+
 
 int32_t tmToTimestamp(const struct tm *time) {
     int32_t timestamp = 0;
@@ -156,6 +165,7 @@ int32_t tmToTimestamp(const struct tm *time) {
 
     return timestamp;
 }
+
 
 void timestampToTm(int32_t timestamp, struct tm *time) {
     time->tm_year = 1970;
@@ -230,6 +240,7 @@ void timestampToTm(int32_t timestamp, struct tm *time) {
     timestamp %= 60;
     time->tm_sec = timestamp;
 }
+
 
 bool hostnameToIp(const char *hostname, ip_addr_t *ipAddr) {
     err_t err;

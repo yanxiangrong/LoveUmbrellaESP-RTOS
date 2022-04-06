@@ -14,6 +14,5 @@ void ntp_init();
 
 void ntp_run();
 
-_Noreturn void task_kcp_recv();
 
 #endif //ESP_RTOS_NTP_H

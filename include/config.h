@@ -5,7 +5,9 @@
 #ifndef ESP_RTOS_CONFIG_H
 #define ESP_RTOS_CONFIG_H
 
+
 #include "esp_common.h"
+
 
 struct {
     bool auto_update_time;

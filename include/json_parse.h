@@ -6,8 +6,6 @@
 #define ESP_RTOS_JSON_PARSE_H
 
 
-
-
 #define MAX_TOLERANCE 10000
 
 #define check_type(object, d_type)    \

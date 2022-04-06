@@ -27,11 +27,11 @@
 #define SQWE_MASK    0xef
 #define OUT_MASK     0x7
 
+// bcd编码转十进制
 uint8_t bcd2dec(uint8_t val);
 
+// 十进制转bcd编码
 uint8_t dec2bcd(uint8_t val);
-
-bool update_register(uint8_t reg, uint8_t mask, uint8_t val);
 
 bool ds1307_start(bool start);
 

@@ -7,6 +7,7 @@
 #include "crc32.h"
 
 
+
 void write_reset_count(int);
 
 
@@ -26,6 +27,7 @@ int read_reset_count() {
     return rtcMem.storeData.resetCount;
 }
 
+
 void write_reset_count(int count) {
     RtcStore rtcMem = {};
     rtcMem.storeData.resetCount = count;
@@ -35,10 +37,12 @@ void write_reset_count(int count) {
     system_rtc_mem_write(RTC_MEMORY_START, &rtcMem, sizeof(rtcMem));
 }
 
+
 void clear_reset_count() {
     write_reset_count(0);
     printf("Clear reset count.\n");
 }
+
 
 void check_count() {
     int count;
@@ -52,6 +56,7 @@ void check_count() {
         system_restart();
     }
 }
+
 
 void task_reset_count() {
     check_count();

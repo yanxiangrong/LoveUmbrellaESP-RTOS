@@ -7,7 +7,6 @@
 
 #include "esp_common.h"
 
-
 void task_update_time(void *ignore);
 
 #endif //ESP_RTOS_M_TIME_H

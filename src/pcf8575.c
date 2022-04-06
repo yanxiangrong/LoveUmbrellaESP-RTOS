@@ -9,8 +9,10 @@
 #include "i2c.h"
 
 
+
 uint16_t gpio_value = 0xFFFF;
 uint16_t gpio_status = 0xFFFF;
+
 
 bool readGPIO(int pin) {
     return gpio_status & (1 << pin);
