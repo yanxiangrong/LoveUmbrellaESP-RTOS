@@ -25,6 +25,11 @@
 #define HOUR_SECONDS 3600
 
 
+#define swap(x, y)   do{(x)=(x)+(y);(y)=(x)-(y);(x)=(x)-(y);}while(0)
+#define abs_m(x) ((x) > 0 ? (x) : (-(x))
+#define diff_abs(x, y) abs_m((x) - (y)
+
+
 char *bool_to_str(bool val);
 
 char *int64_to_str(int64_t val);

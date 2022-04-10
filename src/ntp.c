@@ -12,7 +12,6 @@
 #include "lwip/udp.h"
 
 
-
 #define NTP_SERVER "ntp.aliyun.com"
 
 
@@ -140,7 +139,7 @@ void ntp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, ip_addr_t *addr, u
     nowTm = time_now() + diff;
     update_time(nowTm);
 
-    if (abs(diff) > 1000000) {
+    if (abs_m(diff) > 2000000)) {
         timestampToTm((time_t) (nowTm / 1000000), &tm1);
         printf("Set ds1037 time.\n");
         ds1307_set_time(&tm1);

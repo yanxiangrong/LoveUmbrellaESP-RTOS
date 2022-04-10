@@ -10,7 +10,7 @@
 #include "my_devices.h"
 #include "network.h"
 #include "sync.h"
-
+#include "events.h"
 
 
 void str_fill_zero(char *string, int n) {
@@ -65,6 +65,15 @@ void return_json(cJSON *json) {
     cJSON_AddItemToObject(json, "content", content);
 }
 
+void event_json(cJSON *json, int event) {
+    cJSON *content = cJSON_CreateObject();
+
+    cJSON_AddNumberToObject(content, "code", event);
+    cJSON_AddStringToObject(content, "message", event_string(event));
+
+    cJSON_AddItemToObject(json, "post_type", cJSON_CreateString("event"));
+    cJSON_AddItemToObject(json, "content", content);
+}
 
 void led_control(cJSON *json) {
     cJSON *power = cJSON_GetObjectItem(json, "power");
@@ -114,6 +123,7 @@ void parse_control(cJSON *json) {
     cJSON *target = cJSON_GetObjectItem(json, "target");
     cJSON *operation = cJSON_GetObjectItem(json, "operation");
     cJSON *device_code = cJSON_GetObjectItem(target, "device_code");
+    cJSON *ret, *event;
 
     switch (device_code->valueint) {
         case CODE_LED:
@@ -123,12 +133,17 @@ void parse_control(cJSON *json) {
             lcd_control(operation);
             break;
         case CODE_LOCK:
-            lock_control(operation);
+            ret = cJSON_CreateObject();
+            event = cJSON_CreateObject();
+            return_json(ret);
+            send_json(ret);
 
-            cJSON *ret = cJSON_CreateObject();
-            return_json(json);
-            send_json(json);
+            lock_control(operation);
+            event_json(event, 3001);
+            send_json(event);
+
             cJSON_Delete(ret);
+            cJSON_Delete(event);
 
             break;
     }
