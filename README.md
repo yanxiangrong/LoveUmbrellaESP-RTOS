@@ -1,4 +1,4 @@
-# LoveUmbrellaESP-RTOS
+# 爱心雨伞控制器-RTOS
 
 第二代爱心雨伞控制器程序，基于 FreeRTOS 操作系统。
 
@@ -16,7 +16,9 @@
 
 我们设计并制作了一款雨伞伞架，如下图所示，伞架内部装有一条导轨。雨伞挂于导轨上，导轨末端装有电子锁和传感器，用来控制雨伞进出。
 
-![IMG_20220423_112604 (自定义)](https://user-images.githubusercontent.com/39958055/164873555-69317a19-1a1c-4563-a8d2-916dd3532f62.jpg)
+<p align="center">
+   <img alt="IMG_20220423_112604 (自定义)" src="https://user-images.githubusercontent.com/39958055/164873555-69317a19-1a1c-4563-a8d2-916dd3532f62.jpg" height="400">
+</p>
 
 客户端基于微信小程序设计，用户需要在微信小程序注册，登录，才能借伞。[微信小程序项目地址](https://github.com/HNIT-IoT-Lab/love-umbrella-miniprogram)。  
 服务端使用 Java 语言开发，基于 SpringBoot 框架，带有后台管理页面。[服务端使用项目地址](https://github.com/HNIT-IoT-Lab/umbrella-server)。
