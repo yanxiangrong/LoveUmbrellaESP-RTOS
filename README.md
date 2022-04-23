@@ -18,8 +18,7 @@
 
 ![IMG_20220423_112604 (自定义)](https://user-images.githubusercontent.com/39958055/164873555-69317a19-1a1c-4563-a8d2-916dd3532f62.jpg)
 
-客户端基于微信小程序设计，用户需要在微信小程序注册，登录，才能借伞。[微信小程序项目地址](https://github.com/HNIT-IoT-Lab/love-umbrella-miniprogram)。
-
+客户端基于微信小程序设计，用户需要在微信小程序注册，登录，才能借伞。[微信小程序项目地址](https://github.com/HNIT-IoT-Lab/love-umbrella-miniprogram)。  
 服务端使用 Java 语言开发，基于 SpringBoot 框架，带有后台管理页面。[服务端使用项目地址](https://github.com/HNIT-IoT-Lab/umbrella-server)。
 
 伞架装有基于ESP8266模块的控制器。
@@ -33,6 +32,25 @@
 
 
 该核心板以KCP协议与服务器通信，接收服务器下发指令，来控制锁机、广告机、氛围灯的开和关，向服务器报告用户借/还伞是否完成。
+
+## 软件简介
+
+> 开发工具: Clion + PlatformIO
+> 开发环境: Windows 11 + PlatformIO_NodeMCU_1.0-esp8266-rots-sdk + Clion 捆绑的MinGW(版本w64 9.0)
+
+控制器软件我们起初基于 Arduino-core 开发，后改用基于 RTOS 实时操作系统开发。
+
+我们使用 AirKiss 协议 和 ESPTOUCH 协议来配置 WiFi，ESPTOUCH 协议需要在手机上安装乐鑫提供的 EspTouch APP 来配置，但是经我们测试，始终无法成功配网，具体原因不明。  
+在 AirKiss 协议方面，可以使用微信小程序进行配网（在微信小程序搜索 “AirKiss” 关键字即可找到一些配网小程序）。  
+配网成功后，WiFi 配置会被保存在 Flash 下次启动时可自动链接。
+
+另外，由于 ESP8266 模块 GPIO 资源较少，我们使用了 PCF8575 GPIO 扩展模块，该模块使用 I2C 协议与 ESP8266 通信。  
+时钟部分，时钟模块使用的是 DS1307 模块，时钟的用处非常多，如用于生成随机数，防重放攻击等等。  
+为了获得准确的时间，软件中包含有使用 NTP 协议获取时间的部分程序，默认使用阿里云 NTP 服务器。  
+在发送 NTP 请求前，程序会先通过 DNS 查询 IP 地址，DNS 服务器默认使用 DHCP 提供的地址。  
+随机数生成算法我们采用[梅森旋转算法](https://github.com/dajobe/libmtwist)来生成较高质量的随机数。  
+JSON 部分，我们使用的是 SDK 中的 CJSON 库来处 JSON 数据。  
+
 
 ## Todo
 
