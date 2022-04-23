@@ -35,7 +35,7 @@
 
 ## 软件简介
 
-> 开发工具: Clion + PlatformIO
+> 开发工具: Clion + PlatformIO  
 > 开发环境: Windows 11 + PlatformIO_NodeMCU_1.0-esp8266-rots-sdk + Clion 捆绑的MinGW(版本w64 9.0)
 
 控制器软件我们起初基于 Arduino-core 开发，后改用基于 RTOS 实时操作系统开发。
