@@ -20,7 +20,7 @@
 
 客户端基于微信小程序设计，用户需要在微信小程序注册，登录，才能借伞。[微信小程序项目地址](https://github.com/HNIT-IoT-Lab/love-umbrella-miniprogram)。
 
-服务端使用 Java 语言开发，基于 SpringBoot 框架，带有后台管理页面。
+服务端使用 Java 语言开发，基于 SpringBoot 框架，带有后台管理页面。[服务端使用项目地址](https://github.com/HNIT-IoT-Lab/umbrella-server)。
 
 伞架装有基于ESP8266模块的控制器。
 
