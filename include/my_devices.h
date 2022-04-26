@@ -8,12 +8,12 @@
 #include "esp_common.h"
 
 
-#define PIN_LOCK 0
 #define PIN_LOCK_PWM 12
-#define PIN_DETECT 14
-#define PIN_LCD 1
-#define PIN_LED 2
-#define PIN_LCD_POWER_BUTTON 3
+#define PIN_LOCK               0
+#define PIN_LCD                1
+#define PIN_LED                2
+#define PIN_LCD_POWER_BUTTON   3
+#define PIN_DETECT             4
 
 void lock_init();
 

@@ -18,6 +18,7 @@
 ikcpcb *mKCP;
 struct espconn conn;
 const char *server_host = "volunteer.fengxianhub.top";
+//const char *server_host = "server.natappfree.cc";
 const uint16_t server_port = 67;
 char sendBuf[1024];
 char recvBuf[1024];
@@ -95,10 +96,10 @@ _Noreturn void task_kcp() {
            conf_udp.remote_ip[2],
            conf_udp.remote_ip[3]);
 
-    conf_udp.remote_ip[0] = 192;
-    conf_udp.remote_ip[1] = 168;
-    conf_udp.remote_ip[2] = 2;
-    conf_udp.remote_ip[3] = 49;
+//    conf_udp.remote_ip[0] = 192;
+//    conf_udp.remote_ip[1] = 168;
+//    conf_udp.remote_ip[2] = 2;
+//    conf_udp.remote_ip[3] = 9;
 
     conf_udp.local_port = 49152 + (int) (conv % 16383);
     conf_udp.remote_port = server_port;

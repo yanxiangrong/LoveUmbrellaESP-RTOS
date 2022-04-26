@@ -59,7 +59,7 @@ void return_json(cJSON *json) {
     cJSON *content = cJSON_CreateObject();
 
     cJSON_AddNumberToObject(content, "code", 100);
-    cJSON_AddStringToObject(content, "message", "OK");
+    cJSON_AddStringToObject(content, "message", "ok");
 
     cJSON_AddItemToObject(json, "post_type", cJSON_CreateString("return"));
     cJSON_AddItemToObject(json, "content", content);
@@ -133,8 +133,8 @@ void parse_control(cJSON *json) {
             lcd_control(operation);
             break;
         case CODE_LOCK:
-            ret = cJSON_CreateObject();
-            event = cJSON_CreateObject();
+            ret = comm_json();
+            event = comm_json();
             return_json(ret);
             send_json(ret);
 

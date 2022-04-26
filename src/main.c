@@ -127,10 +127,12 @@ _Noreturn void beep_test() {
 
 
 _Noreturn void lock_test() {
+    next:
     vTaskDelay(2000 / portTICK_RATE_MS);
     open_lock();
     vTaskDelay(2000 / portTICK_RATE_MS);
     close_lock();
+    goto next;
     vTaskDelay(2000 / portTICK_RATE_MS);
     open_lock();
 
@@ -140,7 +142,7 @@ _Noreturn void lock_test() {
         printf("detect, lock!\n");
         close_lock();
 
-        vTaskDelay(10000 / portTICK_RATE_MS);
+        vTaskDelay(2000 / portTICK_RATE_MS);
         open_lock();
         printf("unlock, wait.\n");
     }
@@ -173,7 +175,7 @@ void user_init(void) {
 
 //    xTaskCreate(&beep_test, (const signed char *) "beep_test", 512, NULL, 3, NULL);
 //    xTaskCreate(&lock_test, (const signed char *) "lock_test", 512, NULL, 3, NULL);
-    xTaskCreate(&task_print_meminfo, (const signed char *) "meminfo", 512, NULL, 1, NULL);
+//    xTaskCreate(&task_print_meminfo, (const signed char *) "meminfo", 512, NULL, 1, NULL);
     xTaskCreate(&task_smartconfig, (const signed char *) "smartconfig", 1024, NULL, 2, NULL);
     xTaskCreate(&task_kcp, (const signed char *) "kcp", 512, NULL, 1, NULL);
     xTaskCreate(&task_report, (const signed char *) "task_report", 512, NULL, 1, NULL);

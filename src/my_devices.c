@@ -8,7 +8,6 @@
 #include "pcf8575.h"
 
 
-
 struct {
     bool ad_lcd;
     bool led;
@@ -26,6 +25,13 @@ void lock_init() {
 
     pwm_init(20000, duty, 2, io_info);
     pwm_start();
+
+    dev_status.lock = true;
+    setGPIO(PIN_LOCK, HIGH);
+    updateGPIO();
+    vTaskDelay(500 / portTICK_RATE_MS);
+
+    close_lock();
 }
 
 
@@ -33,17 +39,20 @@ bool open_lock() {
     if (dev_status.lock) {
         return true;
     }
+
     try_detect();
 
     bool res;
 
     setGPIO(PIN_LOCK, HIGH);
+//    setGPIO(PIN_DETECT, HIGH);
+
     res = updateGPIO();
     if (not res) {
         return false;
     }
 
-    pwm_set_duty(1024 / 40, 0);
+    pwm_set_duty(48, 0);
     pwm_start();
 
     vTaskDelay(1000 / portTICK_RATE_MS);
@@ -58,14 +67,16 @@ bool close_lock() {
         return true;
     }
 
+
     bool res;
 
-    pwm_set_duty(1024 / 40 * 4, 0);
+    pwm_set_duty(128, 0);
     pwm_start();
 
     vTaskDelay(1500 / portTICK_RATE_MS);
 
     setGPIO(PIN_LOCK, LOW);
+//    setGPIO(PIN_DETECT, LOW);
     res = updateGPIO();
     if (not res) {
         return false;
