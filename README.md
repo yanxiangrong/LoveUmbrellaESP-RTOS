@@ -73,3 +73,6 @@ JSON 部分，我们使用的是 SDK 中的 CJSON 库来处 JSON 数据。
 - [x] 使用 LED 灯展示状态
 - [ ] 使用 蜂鸣器 展示状态
 - [x] 用传感器感知用户是否取伞完成
+
+## 更多图片和视频
+图片和视频储存在我的[阿里云文件站](https://yandage.top/storage/folder/Pictures/爱心雨伞开发记录/)。
