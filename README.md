@@ -78,4 +78,6 @@ JSON 部分，我们使用的是 SDK 中的 CJSON 库来处 JSON 数据。
 
 ## 更多图片和视频
 
+![自动开锁](https://yandage.top/storage/preview/Pictures/%e7%88%b1%e5%bf%83%e9%9b%a8%e4%bc%9e%e5%bc%80%e5%8f%91%e8%ae%b0%e5%bd%95/video_20220403_232152.mp4)
+
 图片和视频储存在我的[阿里云文件站](https://yandage.top/storage/folder/Pictures/爱心雨伞开发记录/)。
