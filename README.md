@@ -27,9 +27,11 @@
 
 
 > 测试中的控制器
+
 ![IMG_20220331_123436](https://user-images.githubusercontent.com/39958055/160977423-13001bba-1a12-4f85-81d6-6290b2efd2ae.jpg)
 
 > 装上去的控制器
+
 ![IMG_20220406_130902 (自定义) (1)](https://user-images.githubusercontent.com/39958055/161901480-f2683a43-afcc-4a61-a926-96400d476b02.jpg)
 
 
@@ -73,3 +75,7 @@ JSON 部分，我们使用的是 SDK 中的 CJSON 库来处 JSON 数据。
 - [x] 使用 LED 灯展示状态
 - [ ] 使用 蜂鸣器 展示状态
 - [x] 用传感器感知用户是否取伞完成
+
+## 更多图片和视频
+
+图片和视频储存在我的[阿里云文件站](https://yandage.top/storage/folder/Pictures/爱心雨伞开发记录/)。
