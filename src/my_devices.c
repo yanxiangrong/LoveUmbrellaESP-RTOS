@@ -12,7 +12,7 @@ struct {
     bool ad_lcd;
     bool led;
     bool lock;
-} dev_status = {};
+} dev_status = {true, true, true};
 
 
 void lock_init() {
@@ -26,7 +26,6 @@ void lock_init() {
     pwm_init(20000, duty, 2, io_info);
     pwm_start();
 
-    dev_status.lock = true;
     setGPIO(PIN_LOCK, HIGH);
     updateGPIO();
     vTaskDelay(500 / portTICK_RATE_MS);

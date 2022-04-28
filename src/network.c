@@ -199,6 +199,7 @@ _Noreturn void task_report() {
 
             cJSON_Delete(jsonObj);
             vTaskDelay(5000 / portTICK_RATE_MS);
+//            vTaskDelay(1);
         }
     }
 

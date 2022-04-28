@@ -128,5 +128,7 @@ void pcf8575_init(void) {
     for (int i = 5; i < 16; ++i) {
         setGPIO(i, LOW);
     }
+    updateGPIO();
+
     set_intr();
 }

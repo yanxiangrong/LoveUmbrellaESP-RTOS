@@ -160,6 +160,8 @@ void user_init(void) {
     printf("\n\n");
     printf("SDK version:%s\n", system_get_sdk_version());
 
+    xTaskCreate(&task_reset_count, (const signed char *) "reset_count", 512, NULL, 3, NULL);
+
     init_id();
 
     espconn_init();
@@ -170,6 +172,8 @@ void user_init(void) {
     ntp_init();
     pcf8575_init();
     lock_init();
+    close_ad_lcd();
+    close_led();
 
     wifi_set_sleep_type(LIGHT_SLEEP_T);
 
@@ -180,7 +184,6 @@ void user_init(void) {
     xTaskCreate(&task_kcp, (const signed char *) "kcp", 512, NULL, 1, NULL);
     xTaskCreate(&task_report, (const signed char *) "task_report", 512, NULL, 1, NULL);
     xTaskCreate(&task_kcp_recv, (const signed char *) "kcp_recv", 512, NULL, 1, NULL);
-    xTaskCreate(&task_reset_count, (const signed char *) "reset_count", 512, NULL, 3, NULL);
     xTaskCreate(&task_update_time, (const signed char *) "ds1307", 512, NULL, 3, NULL);
 
 }
