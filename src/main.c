@@ -172,8 +172,8 @@ void user_init(void) {
     ntp_init();
     pcf8575_init();
     lock_init();
-    close_ad_lcd();
-    close_led();
+//    close_ad_lcd();
+//    close_led();
 
     wifi_set_sleep_type(LIGHT_SLEEP_T);
 

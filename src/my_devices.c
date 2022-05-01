@@ -39,7 +39,6 @@ bool open_lock() {
         return true;
     }
 
-    try_detect();
 
     bool res;
 
@@ -54,7 +53,11 @@ bool open_lock() {
     pwm_set_duty(48, 0);
     pwm_start();
 
-    vTaskDelay(1000 / portTICK_RATE_MS);
+    vTaskDelay(200 / portTICK_RATE_MS);
+
+    try_detect();
+
+    vTaskDelay(800  / portTICK_RATE_MS);
 
     dev_status.lock = true;
     return true;
