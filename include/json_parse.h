@@ -18,6 +18,6 @@ if(object->type != d_type) {          \
 #define CODE_LCD 2003
 #define CODE_LOCK 2004
 
-void parse(const char *json_str);
+void p21arse(const char *json_str);
 
 #endif //ESP_RTOS_JSON_PARSE_H
