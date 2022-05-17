@@ -172,18 +172,18 @@ void user_init(void) {
     ntp_init();
     pcf8575_init();
     lock_init();
-//    close_ad_lcd();
-//    close_led();
+    close_ad_lcd();
+    close_led();
 
     wifi_set_sleep_type(LIGHT_SLEEP_T);
 
 //    xTaskCreate(&beep_test, (const signed char *) "beep_test", 512, NULL, 3, NULL);
 //    xTaskCreate(&lock_test, (const signed char *) "lock_test", 512, NULL, 3, NULL);
 //    xTaskCreate(&task_print_meminfo, (const signed char *) "meminfo", 512, NULL, 1, NULL);
-    xTaskCreate(&task_smartconfig, (const signed char *) "smartconfig", 1024, NULL, 2, NULL);
-    xTaskCreate(&task_kcp, (const signed char *) "kcp", 512, NULL, 1, NULL);
-    xTaskCreate(&task_report, (const signed char *) "task_report", 512, NULL, 1, NULL);
+    xTaskCreate(&task_smartconfig, (const signed char *) "smartconfig", 512, NULL, 2, NULL);
+    xTaskCreate(&task_kcp, (const signed char *) "kcp", 1024, NULL, 1, NULL);
+    xTaskCreate(&task_report, (const signed char *) "task_report", 256, NULL, 1, NULL);
     xTaskCreate(&task_kcp_recv, (const signed char *) "kcp_recv", 512, NULL, 1, NULL);
-    xTaskCreate(&task_update_time, (const signed char *) "ds1307", 512, NULL, 3, NULL);
+    xTaskCreate(&task_update_time, (const signed char *) "ds1307", 256, NULL, 3, NULL);
 
 }

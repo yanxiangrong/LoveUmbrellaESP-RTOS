@@ -210,6 +210,7 @@ void send_json(cJSON *json) {
 
 _Noreturn void task_report() {
     wait_kcp();
+    int i = 1;
 
     while (true) {
         if (ikcp_waitsnd(mKCP) == 0) {
@@ -218,8 +219,11 @@ _Noreturn void task_report() {
             send_json(jsonObj);
 
             cJSON_Delete(jsonObj);
-            vTaskDelay(5000 / portTICK_RATE_MS);
+            vTaskDelay((i * 1000) / portTICK_RATE_MS);
 //            vTaskDelay(1);
+            if (i <= 60) {
+                i++;
+            }
         }
     }
 
