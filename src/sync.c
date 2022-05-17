@@ -29,7 +29,7 @@ void sync_init() {
 
 
 void detect_ok() {
-    xSemaphoreGive(networkMutex);
+    xSemaphoreGive(detectMutex);
 }
 
 
@@ -37,17 +37,17 @@ void detect_ok_isr() {
     static portBASE_TYPE xHigherPriorityTaskWoken;
     xHigherPriorityTaskWoken = pdFALSE;
 
-    xSemaphoreGiveFromISR(networkMutex, &xHigherPriorityTaskWoken);
+    xSemaphoreGiveFromISR(detectMutex, &xHigherPriorityTaskWoken);
 }
 
 
 void wait_detect() {
-    xSemaphoreTake(networkMutex, portMAX_DELAY);
+    xSemaphoreTake(detectMutex, portMAX_DELAY);
 }
 
 
 void try_detect() {
-    xSemaphoreTake(networkMutex, 0);
+    xSemaphoreTake(detectMutex, 0);
 }
 
 

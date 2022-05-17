@@ -14,7 +14,6 @@
 #include "user_config.h"
 
 
-
 ikcpcb *mKCP;
 struct espconn conn;
 const char *server_host = "volunteer.fengxianhub.top";
@@ -62,6 +61,27 @@ int udpSendOut(const char *pBuf, int lSize, ikcpcb *pKCP, void *pCTX) {
 void udp_recv_callback(void *arg, char *pdata, unsigned short len) {
     printf("Received %d bytes UDP packet\n", len);
     led_blink_once();
+
+    struct ip_info ipconfig;
+    struct ip_addr ip_local;
+
+    struct espconn *c = (struct espconn *) arg;
+    wifi_get_ip_info(STATION_IF, &ipconfig);
+
+    IP4_ADDR(&ip_local,
+             c->proto.udp->remote_ip[0],
+             c->proto.udp->remote_ip[1],
+             c->proto.udp->remote_ip[2],
+             c->proto.udp->remote_ip[3]);
+
+    if (ipconfig.ip.addr != ip_local.addr) {
+        return;
+    }
+
+    if (c->proto.udp->remote_port != conn.proto.udp->local_port) {
+        return;
+    }
+
     ikcp_input(mKCP, pdata, len);
 }
 

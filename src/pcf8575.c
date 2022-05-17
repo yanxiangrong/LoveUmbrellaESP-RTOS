@@ -12,7 +12,7 @@
 
 uint16_t gpio_value = 0xFFFF;
 uint16_t gpio_status = 0xFFFF;
-
+bool lastStatus = false;
 
 bool readGPIO(int pin) {
     return gpio_status & (1 << pin);
@@ -87,9 +87,11 @@ void gpio_intr_handler(void) {
 
     read_gpio_data();
 
-    if (readGPIO(4) == true) {
+    bool status = readGPIO(4);
+    if (status == true and lastStatus == false) {
         detect_ok_isr();
     }
+    lastStatus = status;
 
     printf("GPIO : 00 01 02 03 04 05 06 07 10 11 12 13 14 15 16 17\n");
     printf("LEVEL: ");
