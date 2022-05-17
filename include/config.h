@@ -20,7 +20,7 @@ void config_init() {
 }
 
 void save_config() {
-    system_param_save_with_protect()
+//    system_param_save_with_protect()
 }
 
 #endif //ESP_RTOS_CONFIG_H
