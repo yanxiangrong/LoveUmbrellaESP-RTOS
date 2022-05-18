@@ -59,7 +59,7 @@ int udpSendOut(const char *pBuf, int lSize, ikcpcb *pKCP, void *pCTX) {
 
 
 void udp_recv_callback(void *arg, char *pdata, unsigned short len) {
-    printf("Received %d bytes UDP packet\n", len);
+    printf("Received %d bytes UDP packet.", len);
     led_blink_once();
 
     struct ip_info ipconfig;
@@ -69,18 +69,32 @@ void udp_recv_callback(void *arg, char *pdata, unsigned short len) {
     wifi_get_ip_info(STATION_IF, &ipconfig);
 
     IP4_ADDR(&ip_local,
-             c->proto.udp->remote_ip[0],
-             c->proto.udp->remote_ip[1],
-             c->proto.udp->remote_ip[2],
-             c->proto.udp->remote_ip[3]);
+             c->proto.udp->local_ip[0],
+             c->proto.udp->local_ip[1],
+             c->proto.udp->local_ip[2],
+             c->proto.udp->local_ip[3]);
+
+//    printf("local_port: %d, remote_port: %d\n", c->proto.udp->local_port, c->proto.udp->remote_port);
+//    printf("local_ip: %d.%d.%d.%d, remote_ip: %d.%d.%d.%d\n",
+//           c->proto.udp->local_ip[0],
+//           c->proto.udp->local_ip[1],
+//           c->proto.udp->local_ip[2],
+//           c->proto.udp->local_ip[3],
+//           c->proto.udp->remote_ip[0],
+//           c->proto.udp->remote_ip[1],
+//           c->proto.udp->remote_ip[2],
+//           c->proto.udp->remote_ip[3]);
 
     if (ipconfig.ip.addr != ip_local.addr) {
+        printf(" discarded!\n");
         return;
     }
 
-    if (c->proto.udp->remote_port != conn.proto.udp->local_port) {
+    if (c->proto.udp->local_port != conn.proto.udp->local_port) {
+        printf(" discarded!\n");
         return;
     }
+    printf("\n");
 
     ikcp_input(mKCP, pdata, len);
 }
