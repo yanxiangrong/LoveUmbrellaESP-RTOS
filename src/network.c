@@ -177,6 +177,7 @@ _Noreturn void task_kcp_recv() {
             vTaskDelay(0);
             continue;
         }
+        recvBuf[hr] = 0;
         printf("[KCP] Received:  %s\n", recvBuf);
         parse(recvBuf);
     }

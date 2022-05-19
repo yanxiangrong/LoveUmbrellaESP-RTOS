@@ -97,12 +97,18 @@ bool open_ad_lcd() {
     bool res;
 
     setGPIO(PIN_LCD, HIGH);
-    setGPIO(PIN_LCD_POWER_BUTTON, LOW);
+    setGPIO(PIN_LCD_POWER_BUTTON, HIGH);
     res = updateGPIO();
 
     if (not res) return false;
 
-    vTaskDelay(1000 / portTICK_RATE_MS);
+    vTaskDelay(2000 / portTICK_RATE_MS);
+    setGPIO(PIN_LCD_POWER_BUTTON, LOW);
+
+    res = updateGPIO();
+    if (not res) return false;
+
+    vTaskDelay(2000 / portTICK_RATE_MS);
     setGPIO(PIN_LCD_POWER_BUTTON, HIGH);
 
     res = updateGPIO();
